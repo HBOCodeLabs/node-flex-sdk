@@ -17,15 +17,17 @@ var fs = require('fs');
 var path = require('path');
 fs.existsSync = fs.existsSync || path.existsSync;
 var async = require('async');
-var download = require('download');
+var Download = require('download');
 var rimraf = require('rimraf');
 var mkdirp = require('mkdirp');
 var D2UConverter = require('dos2unix').dos2unix;
 var pkgMeta = require('./package.json');
+var util = require('util');
+var os = require('os');
 
 
 // IMPORTANT:
-// This `require` call MUST be done post-download because the export of this 
+// This `require` call MUST be done post-download because the export of this
 // module is dynamically created based on the executables present after
 // downloading and unzipping the relevant Flex SDK.
 // If the `require` call is done prior to the download completing, then the
@@ -70,40 +72,31 @@ function downloadIt(done) {
   var count = 0;
   var notificationChunkSize = 1024 * 1024;
 
-  function onData(data) {
-    count += data.length;
-    if ((count - notifiedCount) > notificationChunkSize) {
-      console.log('Received ' + (count / notificationChunkSize).toFixed(1) + ' MB...');
-      notifiedCount = count;
+  function onClose(err, files) {
+    if (err) {
+      done(new Error('Error with download:' + os.EOL + util.inspect(err)));
+    } else {
+      done();
     }
-  }
-
-  function onError(err) {
-    done(new Error('Error with HTTP request:\n' + err));
-  }
-
-  function onClose() {
-    console.log('Received ' + count + ' bytes total!');
-    done();  // Next!
   }
 
   function onResponse(response) {
-    console.log('Receiving...');
-
-    if (response.statusCode !== 200) {
-      done(new Error('Error with HTTP request:\n' + JSON.stringify(response.headers)));
+    if (response.statusCode === 302 || response.statusCode === 301) {
+      console.log('Following redirect... ' + response.headers.location);
+    } else if (response.statusCode >= 400) {
+      done(new Error('Error with response:' + os.EOL + 'Status Code: ' + response.statusCode + os.EOL +
+        'Headers:' + os.EOL + util.inspect(response.headers) + util.inspect(response.statusCode)));
+    } else {
+      console.log('Receiving...');
     }
   }
 
-
   console.log('Requesting ' + downloadUrl);
 
-  var downloader = download(downloadUrl, libPath, { extract: true });
-  downloader
-    .on('response', onResponse)
-    .on('data', onData)
-    .on('error', onError)
-    .on('close', onClose);
+  var downloader = new Download({ extract: true })
+    .get(downloadUrl, libPath)
+    .use(onResponse)
+    .run(onClose);
 }
 
 

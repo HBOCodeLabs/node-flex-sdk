@@ -24,9 +24,6 @@
       "url": "https://github.com/JamesMGreene/node-flex-sdk/blob/master/LICENSE-MIT"
     }
   ],
-  "engines": {
-    "node": ">= 0.8.0"
-  },
   "main": "lib/flex",
   "bin": {
     "mxmlc": "./bin/mxmlc"
