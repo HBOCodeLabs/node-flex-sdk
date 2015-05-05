@@ -41,7 +41,7 @@ var downloadUrl = pkgMeta.flexSdk.url;
 
 
 process.on('uncaughtException', function(err) {
-  console.error('FATAL! Uncaught exception: ' + err);
+  console.error('FATAL! Uncaught exception: ' + util.inspect(err));
   process.exit(1);
 });
 

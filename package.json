@@ -1,16 +1,12 @@
 {
-  "name": "flex-sdk",
+  "name": "@dpwolfe/flex-sdk",
   "description": "A Node.js module to download and \"install\" the latest open source Apache/Adobe Flex SDK.",
-  "version": "4.6.0-0",
+  "version": "4.14.1-4",
   "flexSdk": {
-    "url": "http://fpdownload.adobe.com/pub/flex/sdk/builds/flex4.6/flex_sdk_4.6.0.23201_mpl.zip"
+    "url": "http://mirrors.koehn.com/apache/flex/4.14.1/binaries/apache-flex-sdk-4.14.1-bin.zip"
   },
   "homepage": "https://github.com/JamesMGreene/node-flex-sdk",
-  "author": {
-    "name": "James M. Greene",
-    "email": "james.m.greene@gmail.com",
-    "url": "http://jamesgreene.net/"
-  },
+  "author": "James M. Greene <james.m.greene@gmail.com> (http://jamesgreene.net/)",
   "repository": {
     "type": "git",
     "url": "git://github.com/JamesMGreene/node-flex-sdk.git"
@@ -18,12 +14,7 @@
   "bugs": {
     "url": "https://github.com/JamesMGreene/node-flex-sdk/issues"
   },
-  "licenses": [
-    {
-      "type": "MIT",
-      "url": "https://github.com/JamesMGreene/node-flex-sdk/blob/master/LICENSE-MIT"
-    }
-  ],
+  "license": "MIT",
   "main": "lib/flex",
   "bin": {
     "mxmlc": "./bin/mxmlc"
