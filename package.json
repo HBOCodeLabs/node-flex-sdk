@@ -1,7 +1,7 @@
 {
   "name": "@dpwolfe/flex-sdk",
   "description": "A Node.js module to download and \"install\" the latest open source Apache/Adobe Flex SDK.",
-  "version": "4.14.1-4",
+  "version": "4.14.1-5",
   "flexSdk": {
     "url": "http://mirrors.koehn.com/apache/flex/4.14.1/binaries/apache-flex-sdk-4.14.1-bin.zip"
   },
@@ -25,6 +25,10 @@
     "install": "npm config set $npm_package_name:npm_cmd_ran install",
     "postinstall": "node install.js",
     "test": "grunt travis --verbose"
+  },
+  "engines" : {
+    "node" : "^0.12.2",
+    "npm" : "^2.7.4"
   },
   "dependencies": {
     "playerglobal-latest": "^0.1.7",
