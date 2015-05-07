@@ -229,9 +229,8 @@ async.series([
     cleanDestination,
     downloadIt,
     refreshSdk,
-    // Disabling and attempting to use OS specific SDK
-    //fixLineEndings,
-    //fixJavaInvocationsForMac,
+    fixLineEndings,
+    fixJavaInvocationsForMac,
     fixFilePermissions
   ],
   function (err) {

@@ -1,9 +1,9 @@
 {
   "name": "@dpwolfe/flex-sdk",
   "description": "A Node.js module to download and \"install\" the latest open source Apache/Adobe Flex SDK.",
-  "version": "4.14.1-5",
+  "version": "4.6.0-0",
   "flexSdk": {
-    "url": "http://mirrors.koehn.com/apache/flex/4.14.1/binaries/apache-flex-sdk-4.14.1-bin.zip"
+    "url": "http://download.macromedia.com/pub/flex/sdk/flex_sdk_4.6.zip"
   },
   "homepage": "https://github.com/JamesMGreene/node-flex-sdk",
   "author": "James M. Greene <james.m.greene@gmail.com> (http://jamesgreene.net/)",
