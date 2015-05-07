@@ -23,5 +23,16 @@ results
 node_modules
 test
 tests
-lib/flex_sdk/runtimes
+lib/flex_sdk/ant
+lib/flex_sdk/asdoc
 lib/flex_sdk/frameworks/libs/player/*/
+lib/flex_sdk/frameworks/projects
+lib/flex_sdk/include
+lib/flex_sdk/install
+lib/flex_sdk/lib/android
+lib/flex_sdk/lib/aot
+lib/flex_sdk/lib/nai
+lib/flex_sdk/lib/win
+lib/flex_sdk/runtimes
+lib/flex_sdk/samples
+lib/flex_sdk/templates
