@@ -1,7 +1,7 @@
 {
   "name": "@dpwolfe/flex-sdk",
   "description": "A Node.js module to download and \"install\" the latest open source Apache/Adobe Flex SDK.",
-  "version": "4.6.0-2",
+  "version": "4.6.0-3",
   "flexSdk": {
     "url": "http://download.macromedia.com/pub/flex/sdk/flex_sdk_4.6.zip"
   },
@@ -27,7 +27,7 @@
     "test": "grunt travis --verbose"
   },
   "engines" : {
-    "node" : "^0.12.2",
+    "node" : "^0.10.38",
     "npm" : "^2.7.4"
   },
   "dependencies": {
