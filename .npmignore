@@ -27,6 +27,7 @@ lib/flex_sdk/ant
 lib/flex_sdk/asdoc
 lib/flex_sdk/frameworks/libs/player/*/
 lib/flex_sdk/frameworks/projects
+lib/flex_sdk/frameworks/locale
 lib/flex_sdk/include
 lib/flex_sdk/install
 lib/flex_sdk/lib/android
