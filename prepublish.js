@@ -20,7 +20,7 @@ var async = require('async');
 var Download = require('download');
 var rimraf = require('rimraf');
 var mkdirp = require('mkdirp');
-var D2UConverter = require('dos2unix').dos2unix;
+var D2UConverter = require('@dpwolfe/dos2unix').dos2unix;
 var pkgMeta = require('./package.json');
 var util = require('util');
 var os = require('os');
@@ -166,6 +166,7 @@ function fixLineEndings(done) {
 
 
 function fixJavaInvocationsForMac(done) {
+  console.log('Fixing Java invocations for OS X ...');
   // Cleanup: RegExp stuff for finding and replacing
   var javaInvocationRegex = /^java .*\$VMARGS/m;
   var javaInvocationMatchingRegex = /^(java .*\$VMARGS)/mg;
