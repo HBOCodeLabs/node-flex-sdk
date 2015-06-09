@@ -15,12 +15,12 @@
 var DEBUG_TRAVIS = false;
 var fs = require('fs');
 var path = require('path');
-fs.existsSync = fs.existsSync || path.existsSync;
 var async = require('async');
 var Download = require('download');
 var rimraf = require('rimraf');
 var mkdirp = require('mkdirp');
-var D2UConverter = require('@dpwolfe/dos2unix').dos2unix;
+var glob = require('glob');
+var isTextSync = require('istextorbinary').isTextSync;
 var pkgMeta = require('./package.json');
 var util = require('util');
 var os = require('os');
@@ -107,61 +107,54 @@ function refreshSdk(done) {
   done();
 }
 
-
 function fixLineEndings(done) {
-  console.log('Fixing line endings with the `dos2unix` Node module...');
+  console.log('Fixing line endings...');
 
-  // Convert all DOS line endings (CrLf) to UNIX line endings (Lf)
-  var d2uOptions = {
-    glob: {
-      cwd: libPath
-    },
-    maxConcurrency: 100  /* Only open a max of 100 files at once */
-  };
-  var conversionEndedAlready = false;
-  var errors = [];
-  var dos2unix = new D2UConverter(d2uOptions)
-    .on('convert.error', function(err) {
-      err.type = 'convert.error';
-      errors.push(err);
-    })
-    .on('processing.error', function(err) {
-      err.type = 'processing.error';
-      errors.push(err);
-    })
-    .on('error', function(err) {
-      console.error('Critical error while fixing line endings:\n' + (err.stack || err));
-      if (!conversionEndedAlready) {
-        if (errors.length) {
-          logErrorsToFile(errors, 'dos2unix');
+  glob(path.join(libPath, '**', '*'), {}, function (err, files) {
+    if (!err) {
+      var stats = {
+        count: files.length,
+        binary: 0,
+        skipped: 0,
+        fixed: 0,
+        directory: 0
+      };
+
+      files.forEach(function (file) {
+        try {
+          if (fs.statSync(file).isDirectory()) {
+            stats.directory++;
+            stats.skipped++;
+          } else {
+            var buffer = fs.readFileSync(file);
+            if (isTextSync(file, buffer)) {
+              var text = fs.readFileSync(file, { encoding: 'utf8' });
+              var newText = text.replace(/\r\n|\n|\r/g, '\n');
+              if (text !== newText) {
+                fs.unlinkSync(file);
+                fs.writeFileSync(file, newText);
+                stats.fixed++;
+              } else {
+                stats.skipped++;
+              }
+            } else {
+              stats.binary++;
+              stats.skipped++;
+            }
+          }
+        } catch (err) {
+          console.log("readFileSync failed: " + util.inspect(err));
+          done(err);
         }
-        return done(new Error('Exiting prematurely...'));
-      }
-    })
-    .on('end', function(stats) {
-      conversionEndedAlready = true;
-      var err;
-      if (errors.length || stats.error > 0) {
-        logErrorsToFile(errors, 'dos2unix');
-        err = new Error('"dos2unix" processing completed but had errors');
-      }
-      console.log('dos2unix conversion stats: ' + JSON.stringify(stats));
-
-      // Next!
-      done(err);
-    });
-
-  // DEBUGGING
-  if (DEBUG_TRAVIS) {
-    ['start', 'processing.start', 'processing.skip', 'convert.start', 'convert.end', 'processing.end'].forEach(function(e) {
-      dos2unix.on(e, function() {
-        var args = [].slice.call(arguments, 0);
-        console.log('[DEBUG] dos2unix event: ' + JSON.stringify({ 'type': e, 'args': args }, null, '  '));
       });
-    });
-  }
 
-  dos2unix.process(['**/*']);
+      console.log(util.inspect(stats));
+      done();
+    } else {
+      console.log("glob failed: " + util.inspect(err));
+      done(err);
+    }
+  });
 }
 
 
@@ -195,7 +188,7 @@ function fixJavaInvocationsForMac(done) {
       var contents = fs.readFileSync(binaryPath, { encoding: 'utf8' });
       // Rewrite any Java invocations to ensure they work on Mac
       if (contents.match(javaInvocationRegex)) {
-        console.log('Fixing Java invocation for MacOSX in: ' + binaryPath);
+        console.log('Fixing Java invocation for OS X in: ' + binaryPath);
         var cleanedContents = contents.replace(javaInvocationMatchingRegex, javaInvocationReplacement);
         fs.writeFileSync(binaryPath, cleanedContents, { encoding: 'utf8', mode: '755' });
       }
